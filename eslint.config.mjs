@@ -4,18 +4,18 @@ import tseslint from 'typescript-eslint';
 
 export default tseslint.config(
   {
-    ignores: ['**/dist/**', '**/build/**', '**/coverage/**', '**/node_modules/**'],
+    ignores: ['**/dist/**', '**/build/**', '**/coverage/**', '**/node_modules/**']
   },
   eslint.configs.recommended,
   tseslint.configs.recommended,
   {
     files: ['**/*.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
     languageOptions: {
-      ecmaVersion: 'latest',
+      ecmaVersion: 'latest'
     },
     linterOptions: {
-      reportUnusedDisableDirectives: 'error',
-    },
+      reportUnusedDisableDirectives: 'error'
+    }
   },
-  eslintConfigPrettier,
+  eslintConfigPrettier
 );

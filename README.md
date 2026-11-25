@@ -53,6 +53,8 @@ not exist yet.
 - Express 5 API using ES modules;
 - strict TypeScript;
 - `GET /api/health` route;
+- file-backed import and refresh of product metadata from HTTPS source URLs;
+- selected-variant price observations and price-change detection;
 - JSON responses for 404 and 500 errors;
 - graceful shutdown on `SIGINT` and `SIGTERM`;
 - tests using the native Node.js test runner.

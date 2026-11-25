@@ -11,18 +11,18 @@ Future client
     ▼
 apps/backend
     ├── src/server.ts  server startup and lifecycle
-    ├── src/app.ts     Express configuration and dependency wiring
+    ├── src/app.ts     Express configuration and router mounting
     └── src/modules/products
-        ├── product.routes.ts          endpoint declaration
-        ├── product.controller.ts      HTTP input and response handling
-        ├── product.service.ts         import and refresh behavior
+        ├── product.routes.ts          endpoint declaration and router export
+        ├── product.controller.ts      HTTP handling and controller export
+        ├── product.service.ts         use cases and service dependency wiring
         ├── product-extractor.ts       retailer metadata extraction
         └── file-product-repository.ts JSON prototype persistence
 ```
 
 There is currently no frontend, database, or authentication. The first external integration is a
-deliberately narrow product metadata importer for Ruggable and Teppana. Do not assume technologies
-for the remaining areas before a decision is made.
+generic product metadata importer based on public structured data. Do not assume technologies for
+the remaining areas before a decision is made.
 
 ## Current backend
 
@@ -60,11 +60,10 @@ Public responses must not expose stack traces or secrets.
 - `POST /api/products/:id/refresh` fetches a product again and reports `priceChanged` and
   `previousPrice`.
 
-Only HTTPS product URLs on Ruggable and Teppana are accepted in this first slice. Known selection
-parameters (`size` and `variant`) are retained; tracking parameters are discarded. The extractor
-prefers schema.org JSON-LD and falls back to Open Graph metadata. A refresh records a new
-observation even when the price is unchanged, because the observation also proves when the price
-was last checked.
+Product URLs may use any host but must use HTTPS. Known selection parameters (`size` and `variant`)
+are retained; tracking parameters are discarded. The extractor prefers schema.org JSON-LD and
+falls back to Open Graph metadata. A refresh records a new observation even when the price is
+unchanged, because the observation also proves when the price was last checked.
 
 The prototype store defaults to `data/products.json`. The directory is ignored by Git and writes
 replace the file atomically. This is intentionally local, single-process persistence, not a
@@ -100,9 +99,12 @@ src/
 └── shared/                 only for genuinely cross-cutting code
 ```
 
-Within a module, routes only declare endpoints and attach controller methods. Controllers own the
-HTTP boundary: they validate request input, call the service, and map known outcomes to HTTP
-responses. Services implement use cases without depending on Express. Add supporting files such as
+Within a module, each layer directly exports its configured instance. The service file wires its
+concrete repository and external adapters, the controller imports the configured service, and the
+routes file imports the configured controller and exports the router. `app.ts` only imports and
+mounts that router. Controllers own the HTTP boundary: they validate request input, call the
+service, and map known outcomes to HTTP responses. Service and controller classes remain exported
+so their behavior can be tested with controlled dependencies. Add supporting files such as
 repositories, external adapters, schemas, or types only when the module has that concrete need;
 they are not mandatory layers.
 

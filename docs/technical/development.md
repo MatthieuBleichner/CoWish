@@ -64,12 +64,32 @@ query the API through `fetch`.
 
 The only variable currently recognized is:
 
-| Variable | Required | Default | Description       |
-| -------- | -------- | ------- | ----------------- |
-| `PORT`   | No       | `3000`  | Backend HTTP port |
+| Variable             | Required | Default              | Description                   |
+| -------------------- | -------- | -------------------- | ----------------------------- |
+| `PORT`               | No       | `3000`               | Backend HTTP port             |
+| `PRODUCT_STORE_PATH` | No       | `data/products.json` | Local JSON product store path |
 
 When adding a variable, document its behavior and add a placeholder value to `.env.example`.
 Never include a real secret there.
+
+## Trying product import
+
+Start the backend, then import a supported product URL:
+
+```sh
+curl -X POST http://localhost:3000/api/products/import \
+  -H 'content-type: application/json' \
+  -d '{"url":"https://ruggable.eu/fr/products/farrow-ivory-brown-easy-care-wool-rug?size=185x275"}'
+```
+
+List products with `GET /api/products`. Refresh one using the returned identifier:
+
+```sh
+curl -X POST http://localhost:3000/api/products/PRODUCT_ID/refresh
+```
+
+Retailer HTML can change without notice. Parser tests use small representative HTML samples; they
+must remain deterministic and must not make live network requests.
 
 ## Documentation to maintain
 

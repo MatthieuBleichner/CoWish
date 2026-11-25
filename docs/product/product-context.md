@@ -66,6 +66,9 @@ The MVP should support the complete collaborative shortlisting loop:
 - add, edit, and remove candidate items;
 - associate an item with at least a name, source URL, price, image, and free-form key
   characteristics;
+- import an item's name, selected-variant price, currency, and image from a supported source URL;
+- refresh an imported item and retain price observations so members can see whether its price has
+  changed;
 - show all candidates in a format that makes comparison easy;
 - allow list members to vote on an item;
 - allow list members to comment on an item;
@@ -81,8 +84,8 @@ Unless validated as necessary for the MVP, the following are out of initial scop
 
 - purchasing, booking, payment, or checkout inside CoWish;
 - public discovery, social feeds, or influencer features;
-- retailer or booking-platform integrations;
-- price history and price-drop notifications;
+- retailer accounts, private APIs, or booking-platform integrations beyond public page metadata;
+- automated price refreshes and price-drop notifications;
 - automated recommendation or ranking algorithms;
 - real-time chat unrelated to a specific item;
 - enterprise procurement and approval workflows;
@@ -146,8 +149,8 @@ Targets and the precise definition of an “active list” are **to be confirmed
 3. What voting mechanism best supports a decision without becoming cumbersome?
 4. Can the group mark a winning item or close a decision?
 5. Are characteristics free-form per item, defined once for the list, or both?
-6. Must CoWish automatically extract an item's name, image, and price from its URL?
-7. How should unavailable items and prices that change over time be represented?
+6. How should unavailable items be represented?
+7. How much price history should be retained, and how should it be presented?
 8. Can one item be reused or copied across lists?
 9. Which notifications are required for invitations, new items, votes, and comments?
 10. What privacy, deletion, and data export controls are required?

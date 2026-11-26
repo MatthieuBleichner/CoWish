@@ -1,5 +1,7 @@
 import eslint from '@eslint/js';
 import eslintConfigPrettier from 'eslint-config-prettier/flat';
+import reactHooks from 'eslint-plugin-react-hooks';
+import reactRefresh from 'eslint-plugin-react-refresh';
 import tseslint from 'typescript-eslint';
 
 export default tseslint.config(
@@ -16,6 +18,10 @@ export default tseslint.config(
     linterOptions: {
       reportUnusedDisableDirectives: 'error'
     }
+  },
+  {
+    files: ['apps/frontend/src/**/*.{js,jsx,ts,tsx}'],
+    extends: [reactHooks.configs.flat.recommended, reactRefresh.configs.vite]
   },
   eslintConfigPrettier
 );

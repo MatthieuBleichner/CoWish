@@ -6,7 +6,7 @@ CoWish is organized as a Yarn monorepo, with applications under `apps/*` and a r
 for shared libraries under `packages/*`.
 
 ```text
-Future client
+apps/frontend (React + Vite)
     │ HTTP / JSON
     ▼
 apps/backend
@@ -20,9 +20,23 @@ apps/backend
         └── file-product-repository.ts JSON prototype persistence
 ```
 
-There is currently no frontend, database, or authentication. The first external integration is a
-generic product metadata importer based on public structured data. Do not assume technologies for
-the remaining areas before a decision is made.
+The frontend is a client-rendered React application built with Vite. It currently provides a
+responsive introductory page and does not yet consume the API. There is currently no database or
+authentication. The first external integration is a generic product metadata importer based on
+public structured data. Do not assume technologies for the remaining areas before a decision is
+made.
+
+## Current frontend
+
+- Location: `apps/frontend`.
+- Language: strict TypeScript with React JSX.
+- UI framework: React 19.
+- Development and production bundler: Vite 7.
+- Current scope: responsive introductory page explaining the three-step CoWish journey.
+
+The first page intentionally avoids list, voting, and authentication behavior while those product
+questions remain unresolved. Future API access, routing, and browser-level testing conventions
+should be introduced when a concrete use case needs them.
 
 ## Current backend
 
@@ -126,7 +140,7 @@ Principles to preserve:
 
 These choices require an explicit decision when the need arises:
 
-- frontend framework and architecture;
+- frontend routing and data-fetching conventions;
 - production persistence, migrations, and backup strategy;
 - authentication, authorization, and session management;
 - schema validation and OpenAPI documentation;

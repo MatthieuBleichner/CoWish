@@ -15,7 +15,11 @@ From the repository root:
 ```sh
 yarn install
 yarn dev:back
+yarn dev:front
 ```
+
+The frontend runs on `http://localhost:5173` by default. Run the frontend and backend commands in
+separate terminals when working on both applications.
 
 To use a different port:
 
@@ -44,7 +48,8 @@ GitHub Actions runs these checks with Node.js 24 for pull requests and pushes to
 also performs the TypeScript type-check because `tsc` compiles the backend with strict settings.
 
 Backend tests are located in `apps/backend/test`. They open the server on an ephemeral port and
-query the API through `fetch`.
+query the API through `fetch`. Frontend component tests are located in `apps/frontend/test` and
+render components to static markup using React's server renderer.
 
 ## Adding a backend route
 

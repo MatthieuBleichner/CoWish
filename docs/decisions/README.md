@@ -50,3 +50,4 @@ Which benefits, costs, risks, and follow-up tasks result from this decision?
 ## Index
 
 - [0001 — Use GitHub Actions for continuous integration](0001-use-github-actions-for-ci.md)
+- [0002 — Use React and Vite for the frontend](0002-use-react-and-vite-for-the-frontend.md)

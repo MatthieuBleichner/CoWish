@@ -27,8 +27,20 @@ test('imports, persists, lists, and refreshes a product with price-change detect
   const service = new ProductService(
     new FileProductRepository(storePath),
     new SequenceExtractor([
-      { name: 'Tilda', imageUrl: 'https://img/one.jpg', price: 284.25, currency: 'EUR' },
-      { name: 'Tilda', imageUrl: 'https://img/two.jpg', price: 269, currency: 'EUR' }
+      {
+        name: 'Tilda',
+        imageUrl: 'https://img/one.jpg',
+        price: 284.25,
+        currency: 'EUR',
+        availability: 'in_stock'
+      },
+      {
+        name: 'Tilda',
+        imageUrl: 'https://img/two.jpg',
+        price: 269,
+        currency: 'EUR',
+        availability: 'out_of_stock'
+      }
     ]),
     () => dates.shift() ?? new Date('2026-11-26T10:00:00Z'),
     () => 'product-1'
@@ -46,11 +58,15 @@ test('imports, persists, lists, and refreshes a product with price-change detect
   assert.equal(second.previousPrice, 284.25);
   assert.equal(second.product.price, 269);
   assert.equal(second.product.imageUrl, 'https://img/two.jpg');
+  assert.equal(second.product.availability, 'out_of_stock');
   assert.equal(second.product.priceHistory.length, 2);
   assert.equal((await service.list()).length, 1);
 
-  const persisted = JSON.parse(await readFile(storePath, 'utf8')) as { products: unknown[] };
+  const persisted = JSON.parse(await readFile(storePath, 'utf8')) as {
+    products: Array<{ availability: string }>;
+  };
   assert.equal(persisted.products.length, 1);
+  assert.equal(persisted.products[0]?.availability, 'out_of_stock');
 });
 
 test('rejects missing and non-HTTPS product URLs', () => {

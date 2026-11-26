@@ -1,8 +1,11 @@
+export type ProductAvailability = 'in_stock' | 'out_of_stock' | 'unknown';
+
 export interface ExtractedProduct {
   name: string;
   imageUrl: string;
   price: number;
   currency: string;
+  availability: ProductAvailability;
 }
 
 export interface PriceObservation {

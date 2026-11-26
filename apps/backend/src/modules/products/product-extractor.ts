@@ -1,5 +1,5 @@
 import { ProductImportError, UnsupportedProductUrlError } from './errors.js';
-import type { ExtractedProduct, ProductExtractor } from './types.js';
+import type { ExtractedProduct, ProductAvailability, ProductExtractor } from './types.js';
 import { normalizeProductUrl } from './url.js';
 
 type JsonObject = Record<string, unknown>;
@@ -109,6 +109,17 @@ const parsePrice = (value: string | undefined): number | undefined => {
   return Number.isFinite(price) && price >= 0 ? price : undefined;
 };
 
+const parseAvailability = (value: string | undefined): ProductAvailability => {
+  const normalized = value
+    ?.split('/')
+    .pop()
+    ?.replace(/[^a-z]/gi, '')
+    .toLowerCase();
+  if (normalized === 'instock') return 'in_stock';
+  if (normalized === 'outofstock' || normalized === 'soldout') return 'out_of_stock';
+  return 'unknown';
+};
+
 const absoluteImageUrl = (value: string | undefined, sourceUrl: URL): string | undefined => {
   if (!value) return undefined;
   const image = new URL(value, sourceUrl);
@@ -130,6 +141,9 @@ export const extractProductFromHtml = (html: string, source: string): ExtractedP
     readMeta(html, 'og:image');
   const price = parsePrice(asString(offer?.price) ?? readMeta(html, 'og:price:amount'));
   const currency = asString(offer?.priceCurrency) ?? readMeta(html, 'og:price:currency');
+  const availability = parseAvailability(
+    asString(offer?.availability) ?? readMeta(html, 'product:availability')
+  );
   const imageUrl = absoluteImageUrl(imageValue, sourceUrl);
 
   if (!name || !imageUrl || price === undefined || !currency) {
@@ -138,7 +152,13 @@ export const extractProductFromHtml = (html: string, source: string): ExtractedP
     );
   }
 
-  return { name: decodeHtml(name), imageUrl, price, currency: currency.toUpperCase() };
+  return {
+    name: decodeHtml(name),
+    imageUrl,
+    price,
+    currency: currency.toUpperCase(),
+    availability
+  };
 };
 
 export class HttpProductExtractor implements ProductExtractor {

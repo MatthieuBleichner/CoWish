@@ -56,7 +56,8 @@ Public responses must not expose stack traces or secrets.
 
 - `POST /api/products/import` with `{"url":"https://..."}` imports a supported URL. Importing an
   already-known normalized URL refreshes it instead of creating a duplicate.
-- `GET /api/products` lists imported products and their price observations.
+- `GET /api/products` lists imported products, their availability (`in_stock`, `out_of_stock`, or
+  `unknown` when the source does not expose it), and their price observations.
 - `POST /api/products/:id/refresh` fetches a product again and reports `priceChanged` and
   `previousPrice`.
 
@@ -64,6 +65,8 @@ Product URLs may use any host but must use HTTPS. Known selection parameters (`s
 are retained; tracking parameters are discarded. The extractor prefers schema.org JSON-LD and
 falls back to Open Graph metadata. A refresh records a new observation even when the price is
 unchanged, because the observation also proves when the price was last checked.
+The selected variant's availability is imported from schema.org or Open Graph metadata and is
+updated on refresh.
 
 The prototype store defaults to `data/products.json`. The directory is ignored by Git and writes
 replace the file atomically. This is intentionally local, single-process persistence, not a

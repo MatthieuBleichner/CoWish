@@ -66,7 +66,8 @@ The MVP should support the complete collaborative shortlisting loop:
 - add, edit, and remove candidate items;
 - associate an item with at least a name, source URL, price, image, and free-form key
   characteristics;
-- import an item's name, selected-variant price, currency, and image from a supported source URL;
+- import an item's name, selected-variant price, currency, availability, and image from a supported
+  source URL;
 - refresh an imported item and retain price observations so members can see whether its price has
   changed;
 - show all candidates in a format that makes comparison easy;
@@ -149,7 +150,7 @@ Targets and the precise definition of an “active list” are **to be confirmed
 3. What voting mechanism best supports a decision without becoming cumbersome?
 4. Can the group mark a winning item or close a decision?
 5. Are characteristics free-form per item, defined once for the list, or both?
-6. How should unavailable items be represented?
+6. How should unavailable items be presented and treated in comparison workflows?
 7. How much price history should be retained, and how should it be presented?
 8. Can one item be reused or copied across lists?
 9. Which notifications are required for invitations, new items, votes, and comments?

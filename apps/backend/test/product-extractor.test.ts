@@ -8,8 +8,8 @@ test('extracts the Ruggable variant selected by size', () => {
     <meta property="og:title" content="Farrow rug">
     <script type="application/ld+json">
       [{"@type":"ProductGroup","hasVariant":[
-        {"@type":"Product","name":"Farrow 150x215","size":"150x215","image":"https://img/small.jpg","offers":{"price":"349.30","priceCurrency":"EUR"}},
-        {"@type":"Product","name":"Farrow 185x275","size":"185x275","image":"https://img/large.jpg","offers":[{"price":"496.30","priceCurrency":"EUR"}]}
+        {"@type":"Product","name":"Farrow 150x215","size":"150x215","image":"https://img/small.jpg","offers":{"price":"349.30","priceCurrency":"EUR","availability":"https://schema.org/InStock"}},
+        {"@type":"Product","name":"Farrow 185x275","size":"185x275","image":"https://img/large.jpg","offers":[{"price":"496.30","priceCurrency":"EUR","availability":"http://schema.org/OutOfStock"}]}
       ]}]
     </script>`;
 
@@ -22,7 +22,8 @@ test('extracts the Ruggable variant selected by size', () => {
       name: 'Farrow 185x275',
       imageUrl: 'https://img/large.jpg',
       price: 496.3,
-      currency: 'EUR'
+      currency: 'EUR',
+      availability: 'out_of_stock'
     }
   );
 });
@@ -44,7 +45,8 @@ test('extracts the selected Teppana variant and upgrades its image URL', () => {
       name: 'Tapis Tilda Rouge Bordeaux',
       imageUrl: 'https://teppana.fr/tilda-variant.jpg',
       price: 284.25,
-      currency: 'EUR'
+      currency: 'EUR',
+      availability: 'unknown'
     }
   );
 });
@@ -60,6 +62,7 @@ test('falls back to Open Graph product metadata', () => {
     name: 'Fallback rug & runner',
     imageUrl: 'https://teppana.fr/fallback.jpg',
     price: 69,
-    currency: 'EUR'
+    currency: 'EUR',
+    availability: 'unknown'
   });
 });

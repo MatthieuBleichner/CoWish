@@ -32,6 +32,7 @@ made.
 - Language: strict TypeScript with React JSX.
 - UI framework: React 19.
 - Development and production bundler: Vite 7.
+- Localization: i18next and react-i18next, with English and French resources and English fallback.
 - Current scope: responsive introductory page explaining the three-step CoWish journey.
 
 The first page intentionally avoids list, voting, and authentication behavior while those product

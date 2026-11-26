@@ -74,6 +74,56 @@ footer {
   padding-bottom: 3px;
 }
 
+.header-controls,
+.language-switcher {
+  display: flex;
+  align-items: center;
+}
+
+.header-controls {
+  gap: 28px;
+}
+
+.language-switcher {
+  gap: 3px;
+  padding: 3px;
+  border: 1px solid #ded7cd;
+  border-radius: 100px;
+}
+
+.language-switcher button {
+  min-width: 34px;
+  padding: 6px 8px;
+  border: 0;
+  border-radius: 100px;
+  background: transparent;
+  color: #716761;
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.68rem;
+  font-weight: 700;
+}
+
+.language-switcher button.active {
+  background: #282320;
+  color: white;
+}
+
+.language-switcher button:focus-visible {
+  outline: 2px solid #eb674e;
+  outline-offset: 2px;
+}
+
+.visually-hidden {
+  width: 1px;
+  height: 1px;
+  position: absolute;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
 .hero {
   min-height: 650px;
   display: grid;

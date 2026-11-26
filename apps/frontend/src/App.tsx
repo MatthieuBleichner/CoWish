@@ -10,75 +10,102 @@ const HeartIcon = () => (
   </svg>
 );
 
-const steps = [
-  ['01', 'Gather ideas', 'Save all the options your group is considering in one shared place.'],
-  ['02', 'Compare together', 'Keep prices, useful details, and everyone’s thoughts side by side.'],
-  ['03', 'Choose with confidence', 'Turn scattered opinions into a decision everyone understands.']
-];
-
 export function App() {
+  const { t, i18n } = useTranslation();
+  const language = i18n.resolvedLanguage === 'fr' ? 'fr' : 'en';
+  const steps = ['gather', 'compare', 'choose'] as const;
+
+  useEffect(() => {
+    document.documentElement.lang = language;
+    document.title = t('metadata.title');
+    document
+      .querySelector('meta[name="description"]')
+      ?.setAttribute('content', t('metadata.description'));
+  }, [language, t]);
+
+  const selectLanguage = (nextLanguage: 'en' | 'fr') => {
+    void i18n.changeLanguage(nextLanguage);
+  };
+
   return (
     <main>
       <header className="site-header">
-        <a className="brand" href="#top" aria-label="CoWish home">
+        <a className="brand" href="#top" aria-label={t('navigation.home')}>
           <span className="brand-mark">
             <HeartIcon />
           </span>
           CoWish
         </a>
-        <a className="header-link" href="#how-it-works">
-          How it works
-        </a>
+        <div className="header-controls">
+          <a className="header-link" href="#how-it-works">
+            {t('navigation.howItWorks')}
+          </a>
+          <div className="language-switcher" aria-label={t('navigation.language')}>
+            <button
+              type="button"
+              className={language === 'en' ? 'active' : undefined}
+              aria-pressed={language === 'en'}
+              onClick={() => selectLanguage('en')}
+            >
+              EN<span className="visually-hidden"> — {t('navigation.english')}</span>
+            </button>
+            <button
+              type="button"
+              className={language === 'fr' ? 'active' : undefined}
+              aria-pressed={language === 'fr'}
+              onClick={() => selectLanguage('fr')}
+            >
+              FR<span className="visually-hidden"> — {t('navigation.french')}</span>
+            </button>
+          </div>
+        </div>
       </header>
 
       <section className="hero" id="top">
         <div className="hero-copy">
-          <p className="eyebrow">Shared choices, made simpler</p>
+          <p className="eyebrow">{t('hero.eyebrow')}</p>
           <h1>
-            Find the choice
+            {t('hero.titleStart')}
             <br />
-            everyone <em>loves.</em>
+            {t('hero.titleMiddle')} <em>{t('hero.titleEmphasis')}</em>
           </h1>
-          <p className="intro">
-            Bring your favorite options together, compare what matters, and make decisions as a
-            group—without losing ideas in the chat.
-          </p>
+          <p className="intro">{t('hero.introduction')}</p>
           <a className="primary-action" href="#how-it-works">
-            Discover CoWish <ArrowIcon />
+            {t('hero.action')} <ArrowIcon />
           </a>
         </div>
 
-        <div className="hero-art" aria-label="Three people choosing their shared favorite">
+        <div className="hero-art" aria-label={t('hero.illustrationLabel')}>
           <span className="shape shape-one" />
           <span className="shape shape-two" />
           <div className="choice-card card-one">
-            <span>Alex’s pick</span>
-            <strong>Cozy cabin</strong>
+            <span>{t('hero.alexPick')}</span>
+            <strong>{t('hero.cozyCabin')}</strong>
           </div>
           <div className="choice-card card-two">
-            <span>Sam’s pick</span>
-            <strong>Beach house</strong>
+            <span>{t('hero.samPick')}</span>
+            <strong>{t('hero.beachHouse')}</strong>
           </div>
           <div className="favorite-card">
             <HeartIcon />
-            <span>Group favorite</span>
-            <strong>Forest hideaway</strong>
-            <small>3 votes · 4 comments</small>
+            <span>{t('hero.groupFavorite')}</span>
+            <strong>{t('hero.forestHideaway')}</strong>
+            <small>{t('hero.activity')}</small>
           </div>
         </div>
       </section>
 
       <section className="steps" id="how-it-works">
         <div className="section-heading">
-          <p className="eyebrow">How it works</p>
-          <h2>One place for the whole decision.</h2>
+          <p className="eyebrow">{t('howItWorks.eyebrow')}</p>
+          <h2>{t('howItWorks.title')}</h2>
         </div>
         <div className="step-grid">
-          {steps.map(([number, title, description]) => (
-            <article key={number}>
-              <span>{number}</span>
-              <h3>{title}</h3>
-              <p>{description}</p>
+          {steps.map((step, index) => (
+            <article key={step}>
+              <span>{String(index + 1).padStart(2, '0')}</span>
+              <h3>{t(`howItWorks.steps.${step}.title`)}</h3>
+              <p>{t(`howItWorks.steps.${step}.description`)}</p>
             </article>
           ))}
         </div>
@@ -91,8 +118,10 @@ export function App() {
           </span>
           CoWish
         </a>
-        <p>Better choices, made together.</p>
+        <p>{t('footer.tagline')}</p>
       </footer>
     </main>
   );
 }
+import { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';

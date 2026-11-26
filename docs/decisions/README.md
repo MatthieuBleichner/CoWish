@@ -54,3 +54,4 @@ Which benefits, costs, risks, and follow-up tasks result from this decision?
 - [0003 — Use i18next for frontend localization](0003-use-i18next-for-frontend-localization.md)
 - [0004 — Use Material UI for frontend components](0004-use-material-ui-for-frontend-components.md)
 - [0005 — Share API contract types between applications](0005-share-api-contract-types.md)
+- [0006 — Use TanStack Query for frontend server state](0006-use-tanstack-query-for-frontend-server-state.md)

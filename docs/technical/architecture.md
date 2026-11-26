@@ -39,11 +39,13 @@ decision is made.
 - Development and production bundler: Vite 7.
 - Localization: i18next and react-i18next, with English and French resources and English fallback.
 - Routing: React Router with browser-history routing and explicit page routes.
+- Server state: TanStack Query, with feature-owned query options and a shared application query
+  client.
 - Current scope: responsive introductory page explaining the three-step CoWish journey and a
   product library showing imported product metadata, availability, and price history.
 
-The product library uses a small runtime-validated API client. `BrowserRouter` provides client-side
-navigation between the introductory page and `/products`. Vite proxies `/api` requests to the
+The product library uses TanStack Query over a small runtime-validated API client. `BrowserRouter`
+provides client-side navigation between the introductory page and `/products`. Vite proxies `/api` requests to the
 backend on port `3000` during local development; production expects the frontend and API to share
 an origin or equivalent reverse proxy. Loading, empty, and failure states are presented directly in
 the page.
@@ -173,7 +175,6 @@ Principles to preserve:
 
 These choices require an explicit decision when the need arises:
 
-- frontend data-fetching conventions;
 - production persistence, migrations, and backup strategy;
 - authentication, authorization, and session management;
 - schema validation and OpenAPI documentation;

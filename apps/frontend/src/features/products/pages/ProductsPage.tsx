@@ -7,11 +7,11 @@ import Container from '@mui/material/Container';
 import Paper from '@mui/material/Paper';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
-import type { Product } from '@cowish/shared';
-import { useEffect, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
-import { fetchProducts } from '../api/products.api';
+import { productsQueryOptions } from '../api/products.api';
 import { ProductCollection } from '../components/ProductCollection';
 
 const ArrowIcon = () => (
@@ -28,18 +28,7 @@ const ArrowIcon = () => (
 export function ProductsPage() {
   const { t, i18n } = useTranslation();
   const language = i18n.resolvedLanguage === 'fr' ? 'fr' : 'en';
-  const [products, setProducts] = useState<Product[] | null>(null);
-  const [failed, setFailed] = useState(false);
-
-  useEffect(() => {
-    const controller = new AbortController();
-    void fetchProducts(controller.signal)
-      .then(setProducts)
-      .catch((error: unknown) => {
-        if (!(error instanceof DOMException && error.name === 'AbortError')) setFailed(true);
-      });
-    return () => controller.abort();
-  }, []);
+  const productsQuery = useQuery(productsQueryOptions());
 
   useEffect(() => {
     document.documentElement.lang = language;
@@ -104,12 +93,12 @@ export function ProductsPage() {
           </Typography>
         </Box>
 
-        {failed ? (
+        {productsQuery.isError ? (
           <Alert
             severity="error"
             variant="outlined"
             action={
-              <Button color="inherit" onClick={() => window.location.reload()}>
+              <Button color="inherit" onClick={() => void productsQuery.refetch()}>
                 {t('products.retry')}
               </Button>
             }
@@ -118,7 +107,7 @@ export function ProductsPage() {
             <AlertTitle>{t('products.errorTitle')}</AlertTitle>
             {t('products.errorDescription')}
           </Alert>
-        ) : products === null ? (
+        ) : productsQuery.isPending ? (
           <Paper variant="outlined" sx={{ minHeight: 220, borderRadius: 3 }}>
             <Stack
               data-testid="products-loading"
@@ -132,7 +121,7 @@ export function ProductsPage() {
             </Stack>
           </Paper>
         ) : (
-          <ProductCollection products={products} language={language} />
+          <ProductCollection products={productsQuery.data} language={language} />
         )}
       </Container>
     </Box>

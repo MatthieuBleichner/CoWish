@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import type { Product } from '@cowish/shared';
+import { QueryClientProvider } from '@tanstack/react-query';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { MemoryRouter } from 'react-router-dom';
 import { App } from '../src/App';
@@ -8,12 +9,15 @@ import { ProductCollection } from '../src/features/products/components/ProductCo
 import { ProductTile } from '../src/features/products/components/ProductTile';
 import i18n from '../src/i18n';
 import { cowishTheme } from '../src/theme';
+import { createQueryClient } from '../src/api/query-client';
 
 const renderApp = (route = '/') =>
   renderToStaticMarkup(
-    <MemoryRouter initialEntries={[route]}>
-      <App />
-    </MemoryRouter>
+    <QueryClientProvider client={createQueryClient()}>
+      <MemoryRouter initialEntries={[route]}>
+        <App />
+      </MemoryRouter>
+    </QueryClientProvider>
   );
 
 test('exposes the CoWish visual identity through the shared MUI theme', () => {

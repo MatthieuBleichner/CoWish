@@ -1,4 +1,5 @@
 import { getJson } from '../../../api/client';
+import { queryOptions } from '@tanstack/react-query';
 import type { PriceObservation, Product } from '@cowish/shared';
 
 const isString = (value: unknown): value is string => typeof value === 'string';
@@ -42,3 +43,9 @@ export async function fetchProducts(signal?: AbortSignal): Promise<Product[]> {
   }
   return products;
 }
+
+export const productsQueryOptions = () =>
+  queryOptions({
+    queryKey: ['products'],
+    queryFn: ({ signal }) => fetchProducts(signal)
+  });

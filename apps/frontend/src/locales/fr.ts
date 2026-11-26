@@ -6,10 +6,35 @@ export const fr = {
   },
   navigation: {
     home: 'Accueil CoWish',
+    products: 'Ma liste',
     howItWorks: 'Comment ça marche',
     language: 'Langue',
     english: 'Anglais',
     french: 'Français'
+  },
+  products: {
+    metadataTitle: 'Produits — CoWish',
+    backHome: 'Retour à l’accueil',
+    eyebrow: 'Catalogue de produits',
+    title: 'Toutes les options envisagées.',
+    introduction: 'Parcourez chaque produit importé et les informations collectées à la source.',
+    loading: 'Chargement des produits…',
+    emptyTitle: 'Aucun produit pour le moment',
+    emptyDescription: 'Les produits importés apparaîtront ici avec leurs dernières informations.',
+    errorTitle: 'Impossible de charger les produits',
+    errorDescription: 'Vérifiez que l’API CoWish fonctionne, puis réessayez.',
+    retry: 'Réessayer',
+    added: 'Ajouté',
+    lastChecked: 'Dernière vérification',
+    identifier: 'ID du produit',
+    priceHistory_one: '{{count}} relevé de prix',
+    priceHistory_other: '{{count}} relevés de prix',
+    viewSource: 'Voir le produit original',
+    availability: {
+      in_stock: 'En stock',
+      out_of_stock: 'Rupture de stock',
+      unknown: 'Disponibilité inconnue'
+    }
   },
   hero: {
     eyebrow: 'Les choix partagés, en plus simple',

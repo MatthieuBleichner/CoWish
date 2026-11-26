@@ -18,13 +18,16 @@ apps/backend
         ├── product.service.ts         use cases and service dependency wiring
         ├── product-extractor.ts       retailer metadata extraction
         └── file-product-repository.ts JSON prototype persistence
+
+packages/shared
+    └── Cross-application API contract types
 ```
 
-The frontend is a client-rendered React application built with Vite. It currently provides a
-responsive introductory page and does not yet consume the API. There is currently no database or
-authentication. The first external integration is a generic product metadata importer based on
-public structured data. Do not assume technologies for the remaining areas before a decision is
-made.
+The frontend is a client-rendered React application built with Vite. It provides a responsive
+introductory page and a `/products` page that consumes `GET /api/products`. There is currently no
+database or authentication. The first external integration is a generic product metadata importer
+based on public structured data. Do not assume technologies for the remaining areas before a
+decision is made.
 
 ## Current frontend
 
@@ -35,10 +38,37 @@ made.
   use plain CSS when that better preserves the product's visual identity.
 - Development and production bundler: Vite 7.
 - Localization: i18next and react-i18next, with English and French resources and English fallback.
-- Current scope: responsive introductory page explaining the three-step CoWish journey.
+- Routing: React Router with browser-history routing and explicit page routes.
+- Current scope: responsive introductory page explaining the three-step CoWish journey and a
+  product library showing imported product metadata, availability, and price history.
 
-The first page intentionally avoids list, voting, and authentication behavior while those product
-questions remain unresolved. Future API access, routing, and browser-level testing conventions
+The product library uses a small runtime-validated API client. `BrowserRouter` provides client-side
+navigation between the introductory page and `/products`. Vite proxies `/api` requests to the
+backend on port `3000` during local development; production expects the frontend and API to share
+an origin or equivalent reverse proxy. Loading, empty, and failure states are presented directly in
+the page.
+
+Frontend code is organized by feature. Shared HTTP mechanics live in `src/api`, application
+composition lives in `src/app`, and product-specific API functions, components, pages, and types
+stay together under `src/features/products`:
+
+```text
+src/
+├── api/client.ts
+├── App.tsx
+└── features/
+    ├── landing/pages/LandingPage.tsx
+    └── products/
+        ├── api/products.api.ts
+        ├── components/ProductCollection.tsx
+        ├── components/ProductTile.tsx
+        └── pages/ProductsPage.tsx
+```
+
+Only UI reused across multiple features should be promoted to a root-level `components` folder.
+
+The introductory page intentionally avoids list, voting, and authentication behavior while those
+product questions remain unresolved. Future data-fetching and browser-level testing conventions
 should be introduced when a concrete use case needs them.
 
 ## Current backend
@@ -143,7 +173,7 @@ Principles to preserve:
 
 These choices require an explicit decision when the need arises:
 
-- frontend routing and data-fetching conventions;
+- frontend data-fetching conventions;
 - production persistence, migrations, and backup strategy;
 - authentication, authorization, and session management;
 - schema validation and OpenAPI documentation;

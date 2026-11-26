@@ -1,4 +1,6 @@
-export type ProductAvailability = 'in_stock' | 'out_of_stock' | 'unknown';
+import type { Product, ProductAvailability } from '@cowish/shared';
+
+export type { PriceObservation, Product, ProductAvailability } from '@cowish/shared';
 
 export interface ExtractedProduct {
   name: string;
@@ -6,20 +8,6 @@ export interface ExtractedProduct {
   price: number;
   currency: string;
   availability: ProductAvailability;
-}
-
-export interface PriceObservation {
-  price: number;
-  currency: string;
-  checkedAt: string;
-}
-
-export interface Product extends ExtractedProduct {
-  id: string;
-  sourceUrl: string;
-  createdAt: string;
-  lastCheckedAt: string;
-  priceHistory: PriceObservation[];
 }
 
 export interface ProductRefreshResult {

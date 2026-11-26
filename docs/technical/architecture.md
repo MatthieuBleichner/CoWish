@@ -84,7 +84,8 @@ The `tsconfig.base.json` file enforces, among other settings:
 
 The backend build compiles `src` to `apps/backend/dist` with source maps. Tests use `node:test` and
 run TypeScript directly through `tsx`. ESLint analyzes the repository, and Prettier handles
-formatting.
+formatting. GitHub Actions runs the repository-level formatting, linting, test, build, and
+production dependency audit commands for pull requests and pushes to `main`.
 
 ## Architectural direction
 
@@ -130,7 +131,7 @@ These choices require an explicit decision when the need arises:
 - authentication, authorization, and session management;
 - schema validation and OpenAPI documentation;
 - observability (structured logs, metrics, and traces);
-- hosting, CI/CD, and environments;
+- hosting, deployment, and environments;
 - integration and end-to-end testing strategy.
 
 Record structural choices in [`docs/decisions`](../decisions/README.md).

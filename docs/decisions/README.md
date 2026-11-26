@@ -49,4 +49,4 @@ Which benefits, costs, risks, and follow-up tasks result from this decision?
 
 ## Index
 
-No formal decisions have been recorded yet.
+- [0001 — Use GitHub Actions for continuous integration](0001-use-github-actions-for-ci.md)

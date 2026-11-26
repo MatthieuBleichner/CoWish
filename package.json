@@ -10,6 +10,7 @@
     "dev:back": "yarn workspace @cowish/backend dev",
     "build": "yarn workspaces run build",
     "test": "yarn workspaces run test",
+    "audit:dependencies": "yarn audit --groups dependencies",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier . --write",

@@ -37,7 +37,11 @@ yarn lint
 yarn format:check
 yarn test
 yarn build
+yarn audit:dependencies
 ```
+
+GitHub Actions runs these checks with Node.js 24 for pull requests and pushes to `main`. The build
+also performs the TypeScript type-check because `tsc` compiles the backend with strict settings.
 
 Backend tests are located in `apps/backend/test`. They open the server on an ephemeral port and
 query the API through `fetch`.

@@ -31,6 +31,8 @@ made.
 - Location: `apps/frontend`.
 - Language: strict TypeScript with React JSX.
 - UI framework: React 19.
+- Component library: Material UI, with a shared CoWish theme; bespoke compositions may continue to
+  use plain CSS when that better preserves the product's visual identity.
 - Development and production bundler: Vite 7.
 - Localization: i18next and react-i18next, with English and French resources and English fallback.
 - Current scope: responsive introductory page explaining the three-step CoWish journey.

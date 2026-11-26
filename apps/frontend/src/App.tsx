@@ -1,3 +1,7 @@
+import ButtonBase from '@mui/material/ButtonBase';
+import { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
+
 const ArrowIcon = () => (
   <svg aria-hidden="true" viewBox="0 0 24 24">
     <path d="M5 12h14M13 6l6 6-6 6" />
@@ -41,22 +45,20 @@ export function App() {
             {t('navigation.howItWorks')}
           </a>
           <div className="language-switcher" aria-label={t('navigation.language')}>
-            <button
-              type="button"
+            <ButtonBase
               className={language === 'en' ? 'active' : undefined}
               aria-pressed={language === 'en'}
               onClick={() => selectLanguage('en')}
             >
               EN<span className="visually-hidden"> — {t('navigation.english')}</span>
-            </button>
-            <button
-              type="button"
+            </ButtonBase>
+            <ButtonBase
               className={language === 'fr' ? 'active' : undefined}
               aria-pressed={language === 'fr'}
               onClick={() => selectLanguage('fr')}
             >
               FR<span className="visually-hidden"> — {t('navigation.french')}</span>
-            </button>
+            </ButtonBase>
           </div>
         </div>
       </header>
@@ -70,9 +72,9 @@ export function App() {
             {t('hero.titleMiddle')} <em>{t('hero.titleEmphasis')}</em>
           </h1>
           <p className="intro">{t('hero.introduction')}</p>
-          <a className="primary-action" href="#how-it-works">
+          <ButtonBase className="primary-action" component="a" href="#how-it-works">
             {t('hero.action')} <ArrowIcon />
-          </a>
+          </ButtonBase>
         </div>
 
         <div className="hero-art" aria-label={t('hero.illustrationLabel')}>
@@ -123,5 +125,3 @@ export function App() {
     </main>
   );
 }
-import { useEffect } from 'react';
-import { useTranslation } from 'react-i18next';

@@ -1,8 +1,10 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
+import { ThemeProvider } from '@mui/material/styles';
 import { App } from './App';
 import './i18n';
 import './styles.css';
+import { cowishTheme } from './theme';
 
 const root = document.querySelector('#root');
 
@@ -12,6 +14,8 @@ if (!root) {
 
 createRoot(root).render(
   <StrictMode>
-    <App />
+    <ThemeProvider theme={cowishTheme}>
+      <App />
+    </ThemeProvider>
   </StrictMode>
 );

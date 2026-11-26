@@ -52,3 +52,4 @@ Which benefits, costs, risks, and follow-up tasks result from this decision?
 - [0001 — Use GitHub Actions for continuous integration](0001-use-github-actions-for-ci.md)
 - [0002 — Use React and Vite for the frontend](0002-use-react-and-vite-for-the-frontend.md)
 - [0003 — Use i18next for frontend localization](0003-use-i18next-for-frontend-localization.md)
+- [0004 — Use Material UI for frontend components](0004-use-material-ui-for-frontend-components.md)

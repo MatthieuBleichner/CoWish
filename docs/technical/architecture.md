@@ -108,6 +108,7 @@ Public responses must not expose stack traces or secrets.
   already-known normalized URL refreshes it instead of creating a duplicate.
 - `GET /api/products` lists imported products, their availability (`in_stock`, `out_of_stock`, or
   `unknown` when the source does not expose it), and their price observations.
+- `POST /api/products/refresh` refreshes every imported product and returns each refresh result.
 - `POST /api/products/:id/refresh` fetches a product again and reports `priceChanged` and
   `previousPrice`.
 
@@ -116,7 +117,10 @@ are retained; tracking parameters are discarded. The extractor prefers schema.or
 falls back to Open Graph metadata. A refresh records a new observation even when the price is
 unchanged, because the observation also proves when the price was last checked.
 The selected variant's availability is imported from schema.org or Open Graph metadata and is
-updated on refresh.
+updated on refresh. Bulk refreshes run concurrently with `Promise.allSettled`, so one source's
+failure does not prevent other products from being refreshed. Each result reports `fulfilled` with
+its refresh value or `rejected` with the product identifier and a safe error message. An empty
+product store returns an empty results array.
 
 The prototype store defaults to `data/products.json`. The directory is ignored by Git and writes
 replace the file atomically. This is intentionally local, single-process persistence, not a

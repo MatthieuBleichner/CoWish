@@ -11,6 +11,10 @@ import type {
 } from './types.js';
 import { normalizeProductUrl } from './url.js';
 
+export type ProductRefreshOutcome =
+  | { status: 'fulfilled'; value: ProductRefreshResult }
+  | { status: 'rejected'; productId: string; reason: unknown };
+
 export class ProductService {
   public constructor(
     private readonly repository: ProductRepository,
@@ -46,6 +50,21 @@ export class ProductService {
     const product = await this.repository.findById(id);
     if (!product) throw new ProductNotFoundError('Product not found');
     return this.refreshProduct(product);
+  }
+
+  public async refreshAll(): Promise<ProductRefreshOutcome[]> {
+    const products = await this.repository.list();
+    const results = await Promise.allSettled(products.map(product => this.refreshProduct(product)));
+
+    return results.map((result, index) =>
+      result.status === 'fulfilled'
+        ? result
+        : {
+            status: result.status,
+            productId: products[index]?.id ?? 'unknown',
+            reason: result.reason
+          }
+    );
   }
 
   private async refreshProduct(product: Product): Promise<ProductRefreshResult> {

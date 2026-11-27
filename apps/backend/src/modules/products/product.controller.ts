@@ -24,6 +24,17 @@ interface RefreshProductRequestParams {
 
 type RefreshProductResponse = ProductRefreshResult | ErrorResponse;
 
+type RefreshProductOutcome =
+  | { status: 'fulfilled'; value: ProductRefreshResult }
+  | { status: 'rejected'; productId: string; error: string };
+
+interface RefreshAllProductsResponse {
+  results: RefreshProductOutcome[];
+}
+
+const errorMessage = (reason: unknown): string =>
+  reason instanceof Error ? reason.message : 'Product refresh failed';
+
 export class ProductController {
   public constructor(private readonly service: ProductService) {}
 
@@ -87,6 +98,27 @@ export class ProductController {
         response.status(422).json({ error: error.message });
         return;
       }
+      next(error);
+    }
+  };
+
+  public refreshAll = async (
+    _request: Request,
+    response: Response<RefreshAllProductsResponse | ErrorResponse>,
+    next: NextFunction
+  ): Promise<void> => {
+    try {
+      const results = (await this.service.refreshAll()).map(result =>
+        result.status === 'fulfilled'
+          ? result
+          : {
+              status: result.status,
+              productId: result.productId,
+              error: errorMessage(result.reason)
+            }
+      );
+      response.status(200).json({ results });
+    } catch (error) {
       next(error);
     }
   };

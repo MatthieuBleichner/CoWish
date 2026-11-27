@@ -76,3 +76,123 @@ test('rejects missing and non-HTTPS product URLs', () => {
     new UnsupportedProductUrlError('Only HTTPS product URLs are supported')
   );
 });
+
+test('refreshes all imported products', async () => {
+  const directory = await mkdtemp(join(tmpdir(), 'cowish-products-'));
+  const service = new ProductService(
+    new FileProductRepository(join(directory, 'products.json')),
+    new SequenceExtractor([
+      {
+        name: 'First product',
+        imageUrl: 'https://img/first.jpg',
+        price: 10,
+        currency: 'EUR',
+        availability: 'in_stock'
+      },
+      {
+        name: 'Second product',
+        imageUrl: 'https://img/second.jpg',
+        price: 20,
+        currency: 'EUR',
+        availability: 'in_stock'
+      },
+      {
+        name: 'First product',
+        imageUrl: 'https://img/first.jpg',
+        price: 9,
+        currency: 'EUR',
+        availability: 'in_stock'
+      },
+      {
+        name: 'Second product',
+        imageUrl: 'https://img/second.jpg',
+        price: 20,
+        currency: 'EUR',
+        availability: 'out_of_stock'
+      }
+    ]),
+    () => new Date('2026-11-27T10:00:00Z'),
+    (() => {
+      const ids = ['product-1', 'product-2'];
+      return () => ids.shift() ?? 'unexpected-product';
+    })()
+  );
+
+  await service.import('https://shop.example.com/products/first');
+  await service.import('https://shop.example.com/products/second');
+
+  const results = await service.refreshAll();
+
+  assert.equal(results.length, 2);
+  assert.equal(results[0]?.status, 'fulfilled');
+  assert.equal(results[1]?.status, 'fulfilled');
+  if (results[0]?.status !== 'fulfilled' || results[1]?.status !== 'fulfilled') {
+    assert.fail('Expected both product refreshes to succeed');
+  }
+  assert.equal(results[0].value.product.id, 'product-1');
+  assert.equal(results[0].value.priceChanged, true);
+  assert.equal(results[1].value.product.id, 'product-2');
+  assert.equal(results[1].value.priceChanged, false);
+  assert.equal(results[1].value.product.availability, 'out_of_stock');
+  assert.deepEqual(
+    (await service.list()).map(product => product.priceHistory.length),
+    [2, 2]
+  );
+});
+
+test('continues refreshing products after one refresh fails', async () => {
+  const products = [
+    {
+      id: 'product-1',
+      sourceUrl: 'https://shop.example.com/first',
+      name: 'First',
+      imageUrl: 'https://img/first.jpg',
+      price: 10,
+      currency: 'EUR',
+      availability: 'in_stock' as const,
+      createdAt: '2026-11-27T10:00:00.000Z',
+      lastCheckedAt: '2026-11-27T10:00:00.000Z',
+      priceHistory: []
+    },
+    {
+      id: 'product-2',
+      sourceUrl: 'https://shop.example.com/second',
+      name: 'Second',
+      imageUrl: 'https://img/second.jpg',
+      price: 20,
+      currency: 'EUR',
+      availability: 'in_stock' as const,
+      createdAt: '2026-11-27T10:00:00.000Z',
+      lastCheckedAt: '2026-11-27T10:00:00.000Z',
+      priceHistory: []
+    }
+  ];
+  const repository = {
+    list: async () => products,
+    findById: async () => undefined,
+    findBySourceUrl: async () => undefined,
+    save: async () => undefined
+  };
+  let extraction = 0;
+  const extractor: ProductExtractor = {
+    extract: async () => {
+      extraction += 1;
+      if (extraction === 1) throw new Error('Source unavailable');
+      return {
+        name: 'Second',
+        imageUrl: 'https://img/second.jpg',
+        price: 19,
+        currency: 'EUR',
+        availability: 'in_stock'
+      };
+    }
+  };
+  const service = new ProductService(repository, extractor);
+
+  const results = await service.refreshAll();
+
+  assert.equal(results[0]?.status, 'rejected');
+  if (results[0]?.status !== 'rejected') assert.fail('Expected the first refresh to fail');
+  assert.equal(results[0].productId, 'product-1');
+  assert.equal(results[1]?.status, 'fulfilled');
+});

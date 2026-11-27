@@ -6,4 +6,5 @@ export const productRouter = Router();
 
 productRouter.get('/', productController.list);
 productRouter.post('/import', productController.import);
+productRouter.post('/refresh', productController.refreshAll);
 productRouter.post('/:id/refresh', productController.refresh);

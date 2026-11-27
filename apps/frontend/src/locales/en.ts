@@ -23,6 +23,13 @@ export const en = {
     errorTitle: 'Products could not be loaded',
     errorDescription: 'Check that the CoWish API is running, then try again.',
     retry: 'Try again',
+    refresh: {
+      action: 'Refresh products',
+      refreshing: 'Refreshing…',
+      lastRefresh: 'Last refreshed on {{date}}',
+      never: 'Not refreshed yet',
+      error: 'Some products could not be refreshed. The others are up to date.'
+    },
     import: {
       label: 'Product URL',
       placeholder: 'https://shop.example/product',

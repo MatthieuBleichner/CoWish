@@ -24,6 +24,13 @@ export const fr = {
     errorTitle: 'Impossible de charger les produits',
     errorDescription: 'Vérifiez que l’API CoWish fonctionne, puis réessayez.',
     retry: 'Réessayer',
+    refresh: {
+      action: 'Actualiser les produits',
+      refreshing: 'Actualisation…',
+      lastRefresh: 'Dernière actualisation le {{date}}',
+      never: 'Aucune actualisation pour le moment',
+      error: 'Certains produits n’ont pas pu être actualisés. Les autres sont à jour.'
+    },
     import: {
       label: 'URL du produit',
       placeholder: 'https://boutique.example/produit',

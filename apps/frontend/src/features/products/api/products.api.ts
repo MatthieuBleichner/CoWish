@@ -52,6 +52,27 @@ export async function importProduct(url: string): Promise<Product> {
   return product;
 }
 
+export async function refreshProducts(): Promise<void> {
+  const body = await postJson('/api/products/refresh', {});
+  if (!body || typeof body !== 'object') throw new Error('Invalid product refresh response');
+  const results = (body as Record<string, unknown>).results;
+  if (
+    !Array.isArray(results) ||
+    !results.every(
+      result =>
+        result !== null &&
+        typeof result === 'object' &&
+        'status' in result &&
+        (result.status === 'fulfilled' || result.status === 'rejected')
+    )
+  ) {
+    throw new Error('Invalid product refresh response');
+  }
+  if (results.some(result => result.status === 'rejected')) {
+    throw new Error('Some products could not be refreshed');
+  }
+}
+
 export const productsQueryOptions = () =>
   queryOptions({
     queryKey: ['products'],

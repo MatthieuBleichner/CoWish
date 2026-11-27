@@ -11,14 +11,17 @@ import i18n from '../src/i18n';
 import { cowishTheme } from '../src/theme';
 import { createQueryClient } from '../src/api/query-client';
 
-const renderApp = (route = '/') =>
-  renderToStaticMarkup(
-    <QueryClientProvider client={createQueryClient()}>
+const renderApp = (route = '/', products?: Product[]) => {
+  const queryClient = createQueryClient();
+  if (products) queryClient.setQueryData(['products'], products);
+  return renderToStaticMarkup(
+    <QueryClientProvider client={queryClient}>
       <MemoryRouter initialEntries={[route]}>
         <App />
       </MemoryRouter>
     </QueryClientProvider>
   );
+};
 
 test('exposes the CoWish visual identity through the shared MUI theme', () => {
   assert.equal(cowishTheme.palette.primary.main, '#eb674e');
@@ -85,6 +88,29 @@ test('displays every product metadata field', async () => {
   assert.match(markup, /data-testid="product-price-history"/);
   assert.equal(markup.match(/data-testid="product-price-observation"/g)?.length, 2);
   assert.match(markup, /data-testid="product-source-link"/);
+});
+
+test('shows the latest refresh time and a refresh button', async () => {
+  await i18n.changeLanguage('en');
+  const product: Product = {
+    id: 'product-1',
+    name: 'Tilda rug',
+    imageUrl: 'https://images.example/tilda.jpg',
+    price: 269,
+    currency: 'EUR',
+    availability: 'in_stock',
+    sourceUrl: 'https://shop.example/products/tilda',
+    createdAt: '2026-11-24T10:00:00Z',
+    lastCheckedAt: '2026-11-25T10:42:00Z',
+    priceHistory: []
+  };
+
+  const markup = renderApp('/products', [product]);
+
+  assert.match(markup, /data-testid="products-refresh-controls"/);
+  assert.match(markup, /data-testid="products-refresh-button"/);
+  assert.match(markup, /Last refreshed on .*2026/);
+  assert.match(markup, /Refresh products/);
 });
 
 test('shows a dedicated empty-products state', async () => {

@@ -12,7 +12,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useEffect, useState, type FormEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
-import { importProduct, productsQueryOptions } from '../api/products.api';
+import { importProduct, productsQueryOptions, refreshProducts } from '../api/products.api';
 import { ProductCollection } from '../components/ProductCollection';
 
 const ArrowIcon = () => (
@@ -23,6 +23,17 @@ const ArrowIcon = () => (
     sx={{ width: 18, fill: 'none', stroke: 'currentColor', strokeWidth: 1.8 }}
   >
     <path d="M19 12H5m6 6-6-6 6-6" />
+  </Box>
+);
+
+const RefreshIcon = () => (
+  <Box
+    component="svg"
+    aria-hidden="true"
+    viewBox="0 0 24 24"
+    sx={{ width: 18, fill: 'none', stroke: 'currentColor', strokeWidth: 1.8 }}
+  >
+    <path d="M20 6v5h-5M4 18v-5h5M6.1 9a7 7 0 0 1 11.4-2.4L20 9M4 15l2.5 2.4A7 7 0 0 0 17.9 15" />
   </Box>
 );
 
@@ -39,6 +50,25 @@ export function ProductsPage() {
       await queryClient.invalidateQueries({ queryKey: ['products'] });
     }
   });
+  const refreshMutation = useMutation({
+    mutationFn: refreshProducts,
+    onSettled: async () => {
+      await queryClient.invalidateQueries({ queryKey: ['products'] });
+    }
+  });
+
+  const lastRefresh = productsQuery.data?.reduce<string | undefined>(
+    (latest, product) =>
+      latest === undefined || Date.parse(product.lastCheckedAt) > Date.parse(latest)
+        ? product.lastCheckedAt
+        : latest,
+    undefined
+  );
+  const lastRefreshDateTime = lastRefresh
+    ? new Intl.DateTimeFormat(language, { dateStyle: 'medium', timeStyle: 'short' }).format(
+        new Date(lastRefresh)
+      )
+    : undefined;
 
   const handleImport = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -159,6 +189,44 @@ export function ProductsPage() {
             {t('products.import.hint')}
           </Typography>
         </Paper>
+
+        {!productsQuery.isPending && !productsQuery.isError ? (
+          <Stack
+            data-testid="products-refresh-controls"
+            direction={{ xs: 'column', sm: 'row' }}
+            spacing={1.5}
+            sx={{ mb: 3, alignItems: { xs: 'stretch', sm: 'center' }, justifyContent: 'flex-end' }}
+          >
+            <Typography color="text.secondary" variant="body2" sx={{ mr: { sm: 'auto' } }}>
+              {lastRefreshDateTime
+                ? t('products.refresh.lastRefresh', { date: lastRefreshDateTime })
+                : t('products.refresh.never')}
+            </Typography>
+            <Button
+              data-testid="products-refresh-button"
+              variant="outlined"
+              startIcon={
+                refreshMutation.isPending ? (
+                  <CircularProgress color="inherit" size={18} />
+                ) : (
+                  <RefreshIcon />
+                )
+              }
+              disabled={refreshMutation.isPending || productsQuery.data.length === 0}
+              onClick={() => refreshMutation.mutate()}
+            >
+              {refreshMutation.isPending
+                ? t('products.refresh.refreshing')
+                : t('products.refresh.action')}
+            </Button>
+          </Stack>
+        ) : null}
+
+        {refreshMutation.isError ? (
+          <Alert severity="warning" variant="outlined" sx={{ mb: 3, borderRadius: 3 }}>
+            {t('products.refresh.error')}
+          </Alert>
+        ) : null}
 
         {productsQuery.isError ? (
           <Alert

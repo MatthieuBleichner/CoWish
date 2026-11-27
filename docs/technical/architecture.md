@@ -46,7 +46,9 @@ decision is made.
 
 The product library uses TanStack Query over a small runtime-validated API client. Its URL form
 imports a product through `POST /api/products/import` and refreshes the product query after a
-successful import. `BrowserRouter` provides client-side navigation between the introductory page
+successful import. A refresh control displays the latest product check time and calls
+`POST /api/products/refresh`; the product query is reloaded after every attempt so partial bulk
+refresh successes remain visible. `BrowserRouter` provides client-side navigation between the introductory page
 and `/products`. Vite proxies `/api` requests to the backend on port `3000` during local
 development; production expects the frontend and API to share an origin or equivalent reverse
 proxy. Loading, empty, and failure states are presented directly in the page.

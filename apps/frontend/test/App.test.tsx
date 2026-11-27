@@ -52,6 +52,9 @@ test('renders the product library at /products', async () => {
   const markup = renderApp('/products');
 
   assert.match(markup, /data-testid="products-page"/);
+  assert.match(markup, /data-testid="product-import-form"/);
+  assert.match(markup, /type="url"/);
+  assert.match(markup, /Add product/);
   assert.match(markup, /data-testid="products-loading"/);
   assert.match(markup, /href="\/"/);
 });

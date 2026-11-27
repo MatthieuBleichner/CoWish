@@ -44,11 +44,12 @@ decision is made.
 - Current scope: responsive introductory page explaining the three-step CoWish journey and a
   product library showing imported product metadata, availability, and price history.
 
-The product library uses TanStack Query over a small runtime-validated API client. `BrowserRouter`
-provides client-side navigation between the introductory page and `/products`. Vite proxies `/api` requests to the
-backend on port `3000` during local development; production expects the frontend and API to share
-an origin or equivalent reverse proxy. Loading, empty, and failure states are presented directly in
-the page.
+The product library uses TanStack Query over a small runtime-validated API client. Its URL form
+imports a product through `POST /api/products/import` and refreshes the product query after a
+successful import. `BrowserRouter` provides client-side navigation between the introductory page
+and `/products`. Vite proxies `/api` requests to the backend on port `3000` during local
+development; production expects the frontend and API to share an origin or equivalent reverse
+proxy. Loading, empty, and failure states are presented directly in the page.
 
 Frontend code is organized by feature. Shared HTTP mechanics live in `src/api`, application
 composition lives in `src/app`, and product-specific API functions, components, pages, and types

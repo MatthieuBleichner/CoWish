@@ -6,12 +6,13 @@ import CircularProgress from '@mui/material/CircularProgress';
 import Container from '@mui/material/Container';
 import Paper from '@mui/material/Paper';
 import Stack from '@mui/material/Stack';
+import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
-import { useQuery } from '@tanstack/react-query';
-import { useEffect } from 'react';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useEffect, useState, type FormEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
-import { productsQueryOptions } from '../api/products.api';
+import { importProduct, productsQueryOptions } from '../api/products.api';
 import { ProductCollection } from '../components/ProductCollection';
 
 const ArrowIcon = () => (
@@ -28,7 +29,22 @@ const ArrowIcon = () => (
 export function ProductsPage() {
   const { t, i18n } = useTranslation();
   const language = i18n.resolvedLanguage === 'fr' ? 'fr' : 'en';
+  const queryClient = useQueryClient();
+  const [productUrl, setProductUrl] = useState('');
   const productsQuery = useQuery(productsQueryOptions());
+  const importMutation = useMutation({
+    mutationFn: importProduct,
+    onSuccess: async () => {
+      setProductUrl('');
+      await queryClient.invalidateQueries({ queryKey: ['products'] });
+    }
+  });
+
+  const handleImport = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const url = productUrl.trim();
+    if (url !== '') importMutation.mutate(url);
+  };
 
   useEffect(() => {
     document.documentElement.lang = language;
@@ -60,7 +76,7 @@ export function ProductsPage() {
         maxWidth="lg"
         sx={{ minHeight: 'calc(100vh - 88px)', py: { xs: 6, md: 9 } }}
       >
-        <Box sx={{ maxWidth: 760, mb: { xs: 6, md: 8 } }}>
+        <Box sx={{ maxWidth: 760, mb: { xs: 4, md: 5 } }}>
           <Typography
             color="primary.dark"
             gutterBottom
@@ -92,6 +108,57 @@ export function ProductsPage() {
             {t('products.introduction')}
           </Typography>
         </Box>
+
+        <Paper
+          component="form"
+          data-testid="product-import-form"
+          variant="outlined"
+          onSubmit={handleImport}
+          sx={{ mb: { xs: 6, md: 8 }, p: { xs: 2, sm: 2.5 }, borderRadius: 3 }}
+        >
+          <Stack
+            direction={{ xs: 'column', sm: 'row' }}
+            spacing={1.5}
+            sx={{ alignItems: 'flex-start' }}
+          >
+            <TextField
+              type="url"
+              name="productUrl"
+              label={t('products.import.label')}
+              placeholder={t('products.import.placeholder')}
+              value={productUrl}
+              onChange={event => {
+                setProductUrl(event.target.value);
+                if (importMutation.isError) importMutation.reset();
+              }}
+              required
+              fullWidth
+              disabled={importMutation.isPending}
+              error={importMutation.isError}
+              helperText={importMutation.isError ? t('products.import.error') : undefined}
+              slotProps={{ htmlInput: { 'aria-describedby': 'product-import-hint' } }}
+            />
+            <Button
+              type="submit"
+              variant="contained"
+              size="large"
+              disabled={importMutation.isPending || productUrl.trim() === ''}
+              sx={{ minHeight: 56, minWidth: { sm: 150 }, width: { xs: '100%', sm: 'auto' } }}
+            >
+              {importMutation.isPending
+                ? t('products.import.submitting')
+                : t('products.import.submit')}
+            </Button>
+          </Stack>
+          <Typography
+            id="product-import-hint"
+            color="text.secondary"
+            variant="body2"
+            sx={{ mt: 1 }}
+          >
+            {t('products.import.hint')}
+          </Typography>
+        </Paper>
 
         {productsQuery.isError ? (
           <Alert

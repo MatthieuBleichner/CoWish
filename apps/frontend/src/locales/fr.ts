@@ -24,6 +24,14 @@ export const fr = {
     errorTitle: 'Impossible de charger les produits',
     errorDescription: 'Vérifiez que l’API CoWish fonctionne, puis réessayez.',
     retry: 'Réessayer',
+    import: {
+      label: 'URL du produit',
+      placeholder: 'https://boutique.example/produit',
+      hint: 'Collez un lien pour importer son nom, son prix, sa disponibilité et son image.',
+      submit: 'Ajouter le produit',
+      submitting: 'Ajout…',
+      error: 'Impossible d’importer ce produit. Vérifiez l’URL et réessayez.'
+    },
     added: 'Ajouté',
     lastChecked: 'Dernière vérification',
     identifier: 'ID du produit',

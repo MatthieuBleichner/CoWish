@@ -1,4 +1,4 @@
-import { getJson } from '../../../api/client';
+import { getJson, postJson } from '../../../api/client';
 import { queryOptions } from '@tanstack/react-query';
 import type { PriceObservation, Product } from '@cowish/shared';
 
@@ -42,6 +42,14 @@ export async function fetchProducts(signal?: AbortSignal): Promise<Product[]> {
     throw new Error('Invalid products response');
   }
   return products;
+}
+
+export async function importProduct(url: string): Promise<Product> {
+  const body = await postJson('/api/products/import', { url });
+  if (!body || typeof body !== 'object') throw new Error('Invalid product import response');
+  const product = (body as Record<string, unknown>).product;
+  if (!isProduct(product)) throw new Error('Invalid product import response');
+  return product;
 }
 
 export const productsQueryOptions = () =>
